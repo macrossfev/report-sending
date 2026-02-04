@@ -56,6 +56,27 @@ def load_config():
         print_error(f"加载配置文件失败: {e}")
         sys.exit(1)
 
+def load_email_template(template_name):
+    """
+    加载邮件模板文件
+
+    Args:
+        template_name: 模板文件名（不含路径）
+
+    Returns:
+        str: 模板内容
+    """
+    try:
+        template_path = Path(__file__).parent / template_name
+        with open(template_path, 'r', encoding='utf-8') as f:
+            return f.read()
+    except FileNotFoundError:
+        print_warning(f"模板文件 {template_name} 不存在，使用默认模板")
+        return None
+    except Exception as e:
+        print_warning(f"读取模板文件失败: {e}，使用默认模板")
+        return None
+
 def load_excel_config(excel_path):
     """
     从Excel文件加载配置
@@ -256,8 +277,30 @@ def process_folder(folder_name, folder_config, smtp_config, source_path):
         # 发送邮件
         print_info(f"准备发送邮件到: {folder_config['recipient_email']}")
 
-        subject = f"{folder_name} - 加密报告文件"
-        body = f"""您好，{folder_config['recipient_name']}：
+        # 加载邮件模板
+        subject_template = load_email_template('email_subject_template.txt')
+        body_template = load_email_template('email_template.txt')
+
+        # 使用模板或默认内容
+        if subject_template:
+            subject = subject_template.format(
+                folder_name=folder_name,
+                recipient_name=folder_config['recipient_name'],
+                file_count=len(encrypted_files),
+                password=password
+            )
+        else:
+            subject = f"{folder_name} - 加密报告文件"
+
+        if body_template:
+            body = body_template.format(
+                folder_name=folder_name,
+                recipient_name=folder_config['recipient_name'],
+                file_count=len(encrypted_files),
+                password=password
+            )
+        else:
+            body = f"""您好，{folder_config['recipient_name']}：
 
 这是本月的报告文件，共 {len(encrypted_files)} 个PDF文件。
 
