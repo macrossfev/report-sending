@@ -159,8 +159,9 @@ def send_email(smtp_config, recipient_email, recipient_name, subject, body, atta
     try:
         # 创建邮件
         msg = MIMEMultipart()
-        msg['From'] = f"{smtp_config['sender_name']} <{smtp_config['sender_email']}>"
-        msg['To'] = f"{recipient_name} <{recipient_email}>"
+        # 163邮箱要求From字段必须与登录邮箱完全一致
+        msg['From'] = smtp_config['sender_email']
+        msg['To'] = recipient_email
         msg['Subject'] = subject
 
         # 添加正文
