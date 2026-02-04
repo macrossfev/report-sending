@@ -42,7 +42,7 @@ tmp/
 
 # Sensitive data (do not commit real credentials)
 # Users should modify config.json with their own settings
-# config.json
+config.json
 
 # PDF files (source files should not be in git)
 *.pdf

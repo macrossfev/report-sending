@@ -2,7 +2,7 @@
 
 自动将指定文件夹内的PDF文件加密后，通过163邮箱发送给不同的收件人。
 
-**特色：使用Excel表格管理配置，直观易用！**
+**特色：使用Excel表格管理配置，直观易用！支持Windows和Linux！**
 
 ## 功能特性
 
@@ -12,17 +12,19 @@
 - ✅ **Excel表格配置**（无需编辑JSON）
 - ✅ 详细的进度显示和错误提示
 - ✅ 支持中文文件名和路径
-- ✅ Windows双击运行
+- ✅ **跨平台支持**（Windows和Linux）
 - ✅ 使用163邮箱发送
 
 ## 文件说明
 
 ```
-项目文件夹/
-├── 配置表.xlsx              # Excel配置文件（修改这个！）
+report-sending/
+├── report/                  # PDF源文件夹（放置PDF文件）
+│   └── 配置表.xlsx          # Excel配置文件（在这里修改！）
 ├── config.json              # 邮箱配置文件
 ├── pdf_encrypt_send.py      # 主程序
-├── run.bat                  # Windows启动脚本（双击运行）
+├── run.sh                   # Linux启动脚本
+├── run.bat                  # Windows启动脚本
 ├── requirements.txt         # Python依赖
 └── README.md               # 本说明文件
 ```
@@ -33,9 +35,15 @@
 
 ### 第一步：安装Python依赖
 
-打开命令提示符（cmd），切换到项目文件夹，运行：
-
+**Linux/Mac：**
 ```bash
+cd /path/to/report-sending
+pip3 install -r requirements.txt
+```
+
+**Windows：**
+```bash
+cd C:\path\to\report-sending
 py -m pip install -r requirements.txt
 ```
 
@@ -78,38 +86,41 @@ ABCDEF123456  （示例格式，实际以163邮箱显示为准）
 
 ### 第三步：修改邮箱配置
 
-使用记事本打开 `config.json`，修改以下内容：
+使用文本编辑器打开 `config.json`，修改以下内容：
 
-```json
-{
-  "smtp": {
-    "server": "smtp.163.com",              // 保持不变
-    "port": 465,                           // 保持不变
-    "sender_email": "你的163邮箱@163.com",  // 修改为你的163邮箱
-    "sender_password": "你的授权码",        // 修改为第二步获取的授权码
-    "sender_name": "报告发送系统"           // 可自定义发件人名称
-  },
-  "pdf_source_path": "D:\\report",         // PDF源文件夹路径
-  "excel_config_file": "配置表.xlsx"       // 保持不变
-}
-```
-
-**示例：**
+**Linux/Mac示例：**
 ```json
 {
   "smtp": {
     "server": "smtp.163.com",
     "port": 465,
-    "sender_email": "zhangsan@163.com",
-    "sender_password": "ABCDEF123456",
+    "sender_email": "你的163邮箱@163.com",
+    "sender_password": "你的授权码",
     "sender_name": "报告发送系统"
   },
-  "pdf_source_path": "D:\\report",
-  "excel_config_file": "配置表.xlsx"
+  "pdf_source_path": "/home/username/report-sending/report",
+  "excel_config_file": "report/配置表.xlsx"
 }
 ```
 
-**注意：** Windows路径需要使用双反斜杠 `\\`
+**Windows示例：**
+```json
+{
+  "smtp": {
+    "server": "smtp.163.com",
+    "port": 465,
+    "sender_email": "你的163邮箱@163.com",
+    "sender_password": "你的授权码",
+    "sender_name": "报告发送系统"
+  },
+  "pdf_source_path": "D:\\report-sending\\report",
+  "excel_config_file": "report\\配置表.xlsx"
+}
+```
+
+**注意：**
+- Linux/Mac路径使用正斜杠 `/`
+- Windows路径使用双反斜杠 `\\`
 
 ---
 
@@ -117,7 +128,7 @@ ABCDEF123456  （示例格式，实际以163邮箱显示为准）
 
 **这是最重要的一步！**
 
-用Excel打开 `配置表.xlsx`，按照以下格式填写：
+打开 `report/配置表.xlsx`，按照以下格式填写：
 
 #### Excel表格格式：
 
@@ -129,7 +140,7 @@ ABCDEF123456  （示例格式，实际以163邮箱显示为准）
 
 #### 填写说明：
 
-- **文件夹名称**：必须与 `D:\report\` 下的文件夹名称完全一致
+- **文件夹名称**：必须与 `report/` 下的子文件夹名称完全一致
 - **加密密码**：用于加密PDF的密码（每个文件夹可以不同）
 - **收件邮箱**：接收加密PDF的邮箱地址
 - **收件人名称**：收件人的名称（用于邮件显示）
@@ -155,22 +166,21 @@ ABCDEF123456  （示例格式，实际以163邮箱显示为准）
 
 ### 第五步：准备PDF文件
 
-确保你的PDF文件按以下结构存放：
+将PDF文件按以下结构存放在 `report/` 文件夹下：
 
 ```
-D:\report\
-├── 铜梁公司\
-│   ├── 报告1.pdf
-│   ├── 报告2.pdf
-│   └── 数据.pdf
-├── 酉阳公司\
-│   ├── 月报.pdf
-│   └── 统计.pdf
-├── 江津公司\
-│   └── 分析.pdf
-└── 垫江公司\
-    ├── 文档1.pdf
-    └── 文档2.pdf
+report-sending/
+└── report/
+    ├── 配置表.xlsx
+    ├── 铜梁公司/
+    │   ├── 报告1.pdf
+    │   ├── 报告2.pdf
+    │   └── 数据.pdf
+    ├── 酉阳公司/
+    │   ├── 月报.pdf
+    │   └── 统计.pdf
+    └── 江津公司/
+        └── 分析.pdf
 ```
 
 **注意：**
@@ -182,10 +192,22 @@ D:\report\
 
 ### 第六步：运行程序
 
-#### 方法一：双击运行（推荐）
-直接双击 `run.bat` 文件
+**Linux/Mac：**
+```bash
+cd /path/to/report-sending
+./run.sh
+```
 
-#### 方法二：命令行运行
+或者：
+```bash
+python3 pdf_encrypt_send.py
+```
+
+**Windows：**
+
+方法一：双击 `run.bat` 文件
+
+方法二：命令行运行
 ```bash
 py pdf_encrypt_send.py
 ```
@@ -278,16 +300,16 @@ py pdf_encrypt_send.py
 **原因：** Excel配置表中的文件夹名称与实际不一致
 
 **解决：**
-- 检查 `D:\report\` 下是否有对应的文件夹
+- 检查 `report/` 下是否有对应的文件夹
 - 确保文件夹名称完全一致（包括空格、标点符号）
 - 注意中文输入法的全角/半角问题
 
 ### 3. 提示"Excel配置文件不存在"
 
-**原因：** 配置表.xlsx 文件不在脚本同一目录
+**原因：** 配置表.xlsx 文件不在 report/ 文件夹
 
 **解决：**
-- 确保 `配置表.xlsx` 与脚本在同一文件夹
+- 确保 `配置表.xlsx` 在 `report/` 文件夹下
 - 检查文件名是否正确（包括扩展名）
 
 ### 4. 提示"没有PDF文件"
@@ -344,16 +366,31 @@ py pdf_encrypt_send.py
 
 如遇到问题，请检查：
 
+**Linux/Mac：**
+1. Python版本是否 >= 3.8（运行 `python3 --version` 查看）
+2. 依赖包是否正确安装（运行 `pip3 list`）
+3. run.sh是否有执行权限（运行 `chmod +x run.sh`）
+
+**Windows：**
 1. Python版本是否 >= 3.8（运行 `py --version` 查看）
 2. 依赖包是否正确安装（运行 `py -m pip list`）
-3. Excel配置文件格式是否正确
-4. config.json 格式是否正确（JSON格式，注意逗号）
-5. 网络连接是否正常
-6. 163邮箱SMTP服务是否已开启
+
+**通用检查：**
+1. Excel配置文件格式是否正确
+2. config.json 格式是否正确（JSON格式，注意逗号）
+3. 网络连接是否正常
+4. 163邮箱SMTP服务是否已开启
+5. 配置表.xlsx 是否在 report/ 文件夹下
 
 ---
 
 ## 更新日志
+
+### v2.1 (2026-02-04)
+- 新增Linux支持
+- 新增run.sh启动脚本
+- 优化文件结构（report文件夹）
+- 更新README支持跨平台
 
 ### v2.0 (2026-02-04)
 - 新增Excel配置支持
