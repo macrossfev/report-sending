@@ -2,10 +2,10 @@
   "smtp": {
     "server": "smtp.163.com",
     "port": 465,
-    "sender_email": "your_email@163.com",
-    "sender_password": "your_163_authorization_code",
+    "sender_email": "cqswanalysis@163.com",
+    "sender_password": "YFcs736h794xUmTR",
     "sender_name": "报告发送系统"
   },
-  "pdf_source_path": "D:\\report",
-  "excel_config_file": "配置表.xlsx"
+  "pdf_source_path": "/home/macrossfev/report-sending/report",
+  "excel_config_file": "report/配置表.xlsx"
 }
