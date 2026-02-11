@@ -56,16 +56,29 @@ def load_config():
         print_error(f"加载配置文件失败: {e}")
         sys.exit(1)
 
-def load_email_template(template_name):
+def load_email_template(template_name, report_path=None):
     """
-    加载邮件模板文件
+    加载邮件模板文件，优先使用report目录下的模板，其次使用项目根目录下的模板
 
     Args:
         template_name: 模板文件名（不含路径）
+        report_path: report目录路径，如果提供则优先从该目录加载模板
 
     Returns:
         str: 模板内容
     """
+    # 优先从report目录加载
+    if report_path:
+        custom_path = Path(report_path) / template_name
+        if custom_path.exists():
+            try:
+                with open(custom_path, 'r', encoding='utf-8') as f:
+                    print_info(f"使用report目录下的模板: {custom_path}")
+                    return f.read()
+            except Exception as e:
+                print_warning(f"读取report目录模板失败: {e}，尝试使用默认模板")
+
+    # 回退到项目根目录下的默认模板
     try:
         template_path = Path(__file__).parent / template_name
         with open(template_path, 'r', encoding='utf-8') as f:
@@ -277,9 +290,9 @@ def process_folder(folder_name, folder_config, smtp_config, source_path):
         # 发送邮件
         print_info(f"准备发送邮件到: {folder_config['recipient_email']}")
 
-        # 加载邮件模板
-        subject_template = load_email_template('email_subject_template.txt')
-        body_template = load_email_template('email_template.txt')
+        # 加载邮件模板（优先使用report目录下的模板）
+        subject_template = load_email_template('email_subject_template.txt', source_path)
+        body_template = load_email_template('email_template.txt', source_path)
 
         # 使用模板或默认内容
         if subject_template:

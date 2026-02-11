@@ -1,9 +1,13 @@
 您好，{recipient_name}：
 
-这是本月的报告文件，共 {file_count} 个PDF文件。
+这是本月的报告扫描文件，共 {file_count} 个PDF文件。
 
 所有文件已加密，密码为: {password}
 
 请及时查收！
+
+报告以最终寄送的纸质报告为准！
+
+
 
 
